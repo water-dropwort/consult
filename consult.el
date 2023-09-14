@@ -827,10 +827,12 @@ asked for the directories or files to search via
 (defun consult--default-project-function (may-prompt)
   "Return project root directory.
 When no project is found and MAY-PROMPT is non-nil ask the user."
-  (when-let (proj (project-current may-prompt))
-    (cond
-     ((fboundp 'project-root) (project-root proj))
-     ((fboundp 'project-roots) (car (project-roots proj))))))
+  (if (featurep 'projectile)
+      (projectile-project-root)
+    (when-let (proj (project-current may-prompt))
+      (cond
+       ((fboundp 'project-root) (project-root proj))
+       ((fboundp 'project-roots) (car (project-roots proj)))))))
 
 (defun consult--project-root (&optional may-prompt)
   "Return project root as absolute path.
